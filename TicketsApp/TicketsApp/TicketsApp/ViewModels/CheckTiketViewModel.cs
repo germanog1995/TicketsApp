@@ -9,6 +9,7 @@ using System.Windows.Input;
 using TicketsApp.Classes;
 using TicketsApp.Models;
 using TicketsApp.Services;
+using Xamarin.Forms;
 
 namespace TicketsApp.ViewModels
 {
@@ -22,6 +23,7 @@ namespace TicketsApp.ViewModels
         private string ticketCode;
         private bool isRunning;
         private bool isEnabled;
+        private Color color;
         #endregion
 
         #region Events
@@ -29,6 +31,22 @@ namespace TicketsApp.ViewModels
         #endregion
 
         #region Propperties
+        public Color Color
+        {
+            set
+            {
+                if (color != value)
+                {
+                    color = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Color"));
+                }
+            }
+            get
+            {
+                return color;
+            }
+        }
+
         public string TicketCode
         {
             set
@@ -136,6 +154,7 @@ namespace TicketsApp.ViewModels
                 };
                 response = await apiService.Post("http://checkticketsback.azurewebsites.net", "/api", "/Tickets", ticketRequest);
 
+                Color = Color.Green;
                 Message = string.Format("{0}, ALLOW ACCESS!", ticketCode);
 
                 IsRunning = false;
@@ -143,7 +162,7 @@ namespace TicketsApp.ViewModels
                 return;
             }
 
-            
+            Color = Color.Red;
             Message = string.Format("{0}, TICKET READ BEFORE!",ticket.TicketCode);
             IsRunning = false;
             IsEnabled = true;

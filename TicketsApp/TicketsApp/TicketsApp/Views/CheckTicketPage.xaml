@@ -24,6 +24,7 @@
                 </Entry>
                 <Label 
                     Text="{Binding Message}"
+                    TextColor="{Binding Color}"
                     HorizontalOptions="Center"
                     VerticalOptions="Center">
                 </Label>
