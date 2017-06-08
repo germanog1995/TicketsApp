@@ -10,7 +10,14 @@
              Padding="8"
              HorizontalOptions="Center"
              VerticalOptions="Center">
-                <Label 
+            <Image
+                    WidthRequest="100"
+                    HeightRequest="100"
+                    Source="ticket.png"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+            </Image>
+            <Label 
                     Text="Tickect Code:"
                     HorizontalOptions="Center"
                     VerticalOptions="Center">                
@@ -28,7 +35,7 @@
                     HorizontalOptions="Center"
                     VerticalOptions="Center">
                 </Label>
-                <ActivityIndicator
+                <ActivityIndicator                    
                         IsRunning="{Binding IsRunning}">
                 </ActivityIndicator>
                 <Button

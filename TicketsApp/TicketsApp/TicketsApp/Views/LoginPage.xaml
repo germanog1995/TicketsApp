@@ -11,6 +11,13 @@
                 Padding="8"
                 HorizontalOptions="Center"
                 VerticalOptions="Center">
+                <Image
+                    WidthRequest="100"
+                    HeightRequest="100"
+                    Source="icon.png"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">                    
+                </Image>
                 <Grid
                 Padding="30,0,30,0">
                     <Grid Grid.Row="0">
