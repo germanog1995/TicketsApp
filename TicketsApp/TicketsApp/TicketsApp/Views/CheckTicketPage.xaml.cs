@@ -10,9 +10,9 @@ using Xamarin.Forms.Xaml;
 namespace TicketsApp.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class CheckTicket : ContentPage
+    public partial class CheckTicketPage : ContentPage
     {
-        public CheckTicket()
+        public CheckTicketPage()
         {
             InitializeComponent();
         }

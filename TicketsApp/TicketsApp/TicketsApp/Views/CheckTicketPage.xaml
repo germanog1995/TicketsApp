@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TicketsApp.Views.CheckTicketPage"
+             Title="Check Tickets"
+             BindingContext="{Binding Main, Source={StaticResource Locator}}">
+    <ContentPage.Content>
+        <StackLayout
+             BindingContext="{Binding CheckTicket}"
+             Padding="8"
+             HorizontalOptions="Center"
+             VerticalOptions="Center">
+                <Label 
+                    Text="Tickect Code:"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">                
+                </Label>
+                <Entry
+                    Text="{Binding TicketCode}"
+                    Placeholder="Enter an ticket code..."
+                    Keyboard="Email"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="Center">
+                </Entry>
+                <Label 
+                    Text="{Binding Message}"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+                </Label>
+                <ActivityIndicator
+                        IsRunning="{Binding IsRunning}">
+                </ActivityIndicator>
+                <Button
+                        Command="{Binding CheckTicketCommand}"
+                        IsEnabled="{Binding IsEnabled}"
+                        VerticalOptions="Center"
+                        HorizontalOptions="FillAndExpand"
+                        BackgroundColor="Blue"
+                        TextColor="White"
+                        Text="Check">
+                </Button>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -6,19 +6,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using TicketsApp.Classes;
 using TicketsApp.Models;
 using TicketsApp.Services;
 
 namespace TicketsApp.ViewModels
 {
-    public class LoginViewModel : INotifyPropertyChanged
+    public class CheckTiketViewModel : INotifyPropertyChanged
     {
         #region Attributes
         private ApiService apiService;
         private DialogService dialogService;
         private NavigationService navigationService;
-        private string email;
-        private string password;
+        private string message;
+        private string ticketCode;
         private bool isRunning;
         private bool isEnabled;
         #endregion
@@ -28,34 +29,34 @@ namespace TicketsApp.ViewModels
         #endregion
 
         #region Propperties
-        public string Email
+        public string TicketCode
         {
             set
             {
-                if (email != value)
+                if (ticketCode != value)
                 {
-                    email = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Email"));
+                    ticketCode = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TicketCode"));
                 }
             }
             get
             {
-                return email;
+                return ticketCode;
             }
         }
-        public string Password
+        public string Message
         {
             set
             {
-                if (password != value)
+                if (message != value)
                 {
-                    password = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Password"));
+                    message = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Message"));
                 }
             }
             get
             {
-                return password;
+                return message;
             }
         }
         public bool IsRunning
@@ -91,62 +92,64 @@ namespace TicketsApp.ViewModels
         #endregion
 
         #region Contructors
-        public LoginViewModel()
+        public CheckTiketViewModel()
         {
             apiService = new ApiService();
             dialogService = new DialogService();
             navigationService = new NavigationService();
 
             IsEnabled = true;
-            Email = null;
-            Password = null;
+            Message = "Wait for read a ticket...";
         }
         #endregion
 
         #region Commands
-        public ICommand LoginCommand { get { return new RelayCommand(Login); } }
+        public ICommand CheckTicketCommand { get { return new RelayCommand(CheckTicket); } }
 
-        private async void Login()
+        private async void CheckTicket()
         {
-            if (string.IsNullOrEmpty(Email))
+            if (string.IsNullOrEmpty(ticketCode))
             {
-                await dialogService.ShowMessage("Error", "You must enter the user email.");
+                await dialogService.ShowMessage("Error", "You must enter the ticket code.");
                 return;
             }
-
-            if (string.IsNullOrEmpty(Password))
+            
+            if(ticketCode.Length > 4)
             {
-                await dialogService.ShowMessage("Error", "You must enter a password.");
+                await dialogService.ShowMessage("Error", "The ticket code can only be 4 digits.");
                 return;
             }
 
             IsRunning = true;
             IsEnabled = false;
 
-            var response = await apiService.GetUserByEmail("http://checkticketsback.azurewebsites.net/", "/api", "/Users/Login",email,password);
-
-            if (!response.IsSuccess)
+            var response = await apiService.GetTicket("http://checkticketsback.azurewebsites.net/", "/api", "/Tickets", TicketCode);
+            var ticket = (Ticket)response.Result;
+            if (!response.IsSuccess)    
             {
+                var mainViewModel = MainViewModel.GetInstance();
+                var ticketRequest = new Ticket
+                {
+                    TicketCode = ticketCode,
+                    UserId = mainViewModel.CurrentUser.UserId,
+                    DateTime = DateTime.Now,
+                };
+                response = await apiService.Post("http://checkticketsback.azurewebsites.net", "/api", "/Tickets", ticketRequest);
+
+                Message = string.Format("{0}, ALLOW ACCESS!", ticketCode);
+
                 IsRunning = false;
                 IsEnabled = true;
-                await dialogService.ShowMessage("Error", "Problem ocurred retrieving user information, try latter.");
                 return;
             }
 
-            var user = (User)response.Result;
-
+            
+            Message = string.Format("{0}, TICKET READ BEFORE!",ticket.TicketCode);
             IsRunning = false;
             IsEnabled = true;
 
-            var mainViewModel = MainViewModel.GetInstance();            
 
-            mainViewModel.CurrentUser = user;
-
-            mainViewModel.CheckTicket = new CheckTiketViewModel();
-            await navigationService.Navigate("CheckTicketPage");
         }
         #endregion
-
-
     }
 }
